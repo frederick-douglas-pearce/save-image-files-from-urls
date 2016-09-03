@@ -33,17 +33,28 @@
 import urllib.request
 
 ## II) Define functions
-def get_input_url(inp_date, inp_fnind, inp_name, input_data, verbose):
+def get_input_imageurl(inp_date, inp_fnind, inp_name, input_data, verbose):
     """Returns a complete input url string by concatenating inp_date, 
     inp_name, and two string values in input_data dict.
-    If verbose is truthy, then print the returned input url string"""
-    input_url = input_data['url']['address'] + inp_date + "/" + inp_fname + \
+    If verbose is truthy, then print the returned input url string
+    """
+    input_imageurl = input_data['url']['address'] + inp_date + "/" + inp_fname + \
             input_data['url']['file']['ext'][inp_fnind]
     if verbose:
-        print("Input image file URL: \n{}".format(input_url))
-    return input_url
+        print("Input image file URL: \n{}".format(input_imageurl))
+    return input_imageurl
 
+def get_output_imagefile(inp_date, inp_fnind, output_data):
+    """Returns a complete output file name string by concatenating 
 
+    """
+    output_imagefile = output_data['image']['path'] + \
+            "_".join((inp_date, \
+                    output_data['image']['file']['name'][inp_fnind]
+            )) + output_data['image']['file']['ext']
+    if output_data['verbose']:
+        print("Output image file path: \n{}\n".format(output_imagefile))
+    return output_imagefile
 
 ## III) If this file is run from command line, execute script below
 if __name__ == "__main__":
@@ -79,29 +90,24 @@ if __name__ == "__main__":
         }, 
         'verbose': True
     }
-    # Download image file from image file at input_data['url']['address'] +
-    # input_data['url']['folder']['date']['values'] +
-    # input_data['url']['file']['name'] + 
-    # input_data['url']['file']['ext']
-    # Then, write image file to directory/filename defined by
-    # output_data['image']['path'] + output_data['image']['file']['name'] +
-    # output_data['image']['file']['ext']
-    # The ['file']['name'] list value in input_data MUST be the same length as 
-    # the ['file']['name'] list value in  output_data!!!
+    # Saving images to file from urls is a three step process that occurs
+    # within two loops, one over the folder date values, inp_date, and the
+    # other over the url file name (images in each folder):
+    #   1) Get the image urls specified in the input_data dict using the 
+    #      website specific function get_input_imageurl() (e.g. spaceweather)
+    #   2) Get the image file name specified in the output_data dict using 
+    #      the user specified function get_output_imagefile()
+    #   3) Download each image from its url and save it to its image file name
+    #      using urllib.request.urlretrieve
+    # Warning: the ['file']['name'] list in input_data MUST be the same length as 
+    # the ['file']['name'] list in output_data!!!
     print("\n**** Saving image files from input URLs ****\n")
     for inp_date in input_data['url']['folder']['date']['values']:
         for inp_fnind, inp_fname in enumerate(input_data['url']['file']['name']):
-            input_url = get_input_url(inp_date, inp_fnind, inp_fname, \
+            input_imageurl = get_input_imageurl(inp_date, inp_fnind, inp_fname, \
                     input_data, output_data['verbose'])
-            #input_url = input_data['url']['address'] + inp_date + "/" + \
-            #        inp_fname + input_data['url']['file']['ext'][inp_fnind]
-            output_imagefile = output_data['image']['path'] + \
-                    "_".join((inp_date, \
-                            output_data['image']['file']['name'][inp_fnind])) + \
-                    output_data['image']['file']['ext']
-            if output_data['verbose']:
-                print("Output image file path: \n{}\n".format(output_imagefile))
-            urllib.request.urlretrieve(input_url, output_imagefile)
+            output_imagefile = get_output_imagefile(inp_date, inp_fnind, output_data)
+            urllib.request.urlretrieve(input_imageurl, output_imagefile)
     if output_data['verbose']:
-        print("")
+        print("**** Finished saving images to file ****\n")
 
