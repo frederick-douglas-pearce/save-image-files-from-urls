@@ -33,6 +33,16 @@
 import urllib.request
 
 ## II) Define functions
+def get_input_url(inp_date, inp_fnind, inp_name, input_data, verbose):
+    """Returns a complete input url string by concatenating inp_date, 
+    inp_name, and two string values in input_data dict.
+    If verbose is truthy, then print the returned input url string"""
+    input_url = input_data['url']['address'] + inp_date + "/" + inp_fname + \
+            input_data['url']['file']['ext'][inp_fnind]
+    if verbose:
+        print("Input image file URL: \n{}".format(input_url))
+    return input_url
+
 
 
 ## III) If this file is run from command line, execute script below
@@ -81,10 +91,10 @@ if __name__ == "__main__":
     print("\n**** Saving image files from input URLs ****\n")
     for inp_date in input_data['url']['folder']['date']['values']:
         for inp_fnind, inp_fname in enumerate(input_data['url']['file']['name']):
-            input_url = input_data['url']['address'] + inp_date + "/" + \
-                    inp_fname + input_data['url']['file']['ext'][inp_fnind]
-            if output_data['verbose']:
-                print("Input image file URL: \n{}".format(input_url))
+            input_url = get_input_url(inp_date, inp_fnind, inp_fname, \
+                    input_data, output_data['verbose'])
+            #input_url = input_data['url']['address'] + inp_date + "/" + \
+            #        inp_fname + input_data['url']['file']['ext'][inp_fnind]
             output_imagefile = output_data['image']['path'] + \
                     "_".join((inp_date, \
                             output_data['image']['file']['name'][inp_fnind])) + \
