@@ -2,24 +2,23 @@ save_imagefiles_from_imageurls.py
 ======
 **imagefiles_from_imageurls.py** is a script for downloading images from 
 a list of urls and saving them to file.  Both the urls and filenames must
-be custom-built for each website, depending on the pattern of the
-url address/folder/file names.
+be custom-built depending on the website's url address/folder/file pattern.
 
 An example is included for demonstration purposes.  It downloads two different
-types of sum images from the spaceweather website:
+types of sun images from the spaceweather website:
 http://spaceweather.com
 
 ## Usage
 * Download a copy from github
 
 ```
-$ git clone https://github.com/fdphd15/save-imagefiles-from-imageurls.git
+$ git clone https://github.com/fdphd15/save-image-files-from-urls.git
 ```
 
 * Run the example
 
 ```
-$ python3 save_imagefiles_from_imageurls/save_imagefiles_from_imageurls.py
+$ python3 ./save_imagefiles_from_imageurls.py
 ```
 
 ## Version 
