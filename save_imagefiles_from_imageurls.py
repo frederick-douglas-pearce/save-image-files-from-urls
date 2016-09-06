@@ -35,8 +35,8 @@ import urllib.request
 ## II) Define functions
 def get_spaceweather_imageurl(iu_address, iu_date, iu_filename, iu_extension, \
         verbose):
-    """Returns a complete input url string tailored to the spaceweather site 
-    by concatenating the following input image url (iu) strings that define the
+    """Returns a complete image url string tailored to the spaceweather site by 
+    concatenating the input image url (iu) strings that define the
     address, the date folder, the filename root, and the filename extension.
     If verbose is truthy, then print the returned image url string
     """
@@ -45,18 +45,17 @@ def get_spaceweather_imageurl(iu_address, iu_date, iu_filename, iu_extension, \
         print("Input image file URL: \n{}".format(sw_imageurl))
     return sw_imageurl
 
-def get_spaceweather_imagefile(inp_date, inp_fnind, output_data):
-    """Returns a complete output file name string by concatenating 
-    input variable string values based on the file format specified in the 
-    output_data dict.
+def get_spaceweather_imagefile(if_path, if_date, if_filename, if_extension, \
+        verbose):
+    """Returns a complete image filename string tailored to the spaceweather 
+    site string by concatenating the input image filename (if) strings that 
+    define the path, date, filename root, and the filename extension
+    If verbose is truthy, then print the returned image filename string
     """
-    output_imagefile = output_data['image']['path'] + \
-            "_".join((inp_date, \
-                    output_data['image']['file']['name'][inp_fnind]
-            )) + output_data['image']['file']['ext']
-    if output_data['verbose']:
-        print("Output image file path: \n{}\n".format(output_imagefile))
-    return output_imagefile
+    sw_imagefile = if_path + if_date + "_" + if_filename + if_extension
+    if verbose:
+        print("Output image file full path: \n{}\n".format(sw_imagefile))
+    return sw_imagefile
 
 def save_spaceweather_images_to_file(input_data, output_data):
     """Save images to file from their urls on the Spaceweather website.
@@ -75,11 +74,16 @@ def save_spaceweather_images_to_file(input_data, output_data):
     print("\n**** Saving image files from input URLs ****\n")
     for inp_date in input_data['url']['folder']['date']['values']:
         for inp_fnind, inp_fname in enumerate(input_data['url']['file']['name']):
-            input_imageurl = get_spaceweather_imageurl(inp_date, inp_fnind, \
-                    inp_fname, input_data, output_data['verbose']
+            input_imageurl = get_spaceweather_imageurl( \
+                    input_data['url']['address'], inp_date, inp_fname, \
+                    input_data['url']['file']['ext'][inp_fnind], \
+                    output_data['verbose']
             )
             output_imagefile = get_spaceweather_imagefile( \
-                    inp_date, inp_fnind, output_data
+                    output_data['image']['path'], inp_date, \
+                    output_data['image']['file']['name'][inp_fnind], \
+                    output_data['image']['file']['ext'], \
+                    output_data['verbose']
             )
             urllib.request.urlretrieve(input_imageurl, output_imagefile)
     if output_data['verbose']:
@@ -88,10 +92,13 @@ def save_spaceweather_images_to_file(input_data, output_data):
 ## III) If this file is run from command line, execute script below
 if __name__ == "__main__":
     ## Run script
-    # input_data dict is used to define image url names
-    # output_data dict is used to define image file names
+    # input_data dict values are used to define image url names
+    # output_data dict values are used to define image file names
     #   output_data['image']['path'] MUST exist! 
     #   output_data['verbose'] = True prints details to screen
+    # The input file name extensions can be anything supported by 
+    # request.urlretrieve, while the output image files are saved in a single 
+    # format defined by the image file extension
     # ToDo: give option to create image path if it doesn't exist already
     input_data = { \
         'url': { \
