@@ -33,16 +33,17 @@
 import urllib.request
 
 ## II) Define functions
-def get_spaceweather_imageurl(inp_date, inp_fnind, inp_fname, input_data, verbose):
-    """Returns a complete input url string by concatenating inp_date, 
-    inp_name, and two string values in input_data dict.
-    If verbose is truthy, then print the returned input url string
+def get_spaceweather_imageurl(iu_address, iu_date, iu_filename, iu_extension, \
+        verbose):
+    """Returns a complete input url string tailored to the spaceweather site 
+    by concatenating the following input image url (iu) strings that define the
+    address, the date folder, the filename root, and the filename extension.
+    If verbose is truthy, then print the returned image url string
     """
-    input_imageurl = input_data['url']['address'] + inp_date + "/" + inp_fname + \
-            input_data['url']['file']['ext'][inp_fnind]
+    sw_imageurl = iu_address + iu_date + "/" + iu_filename + iu_extension
     if verbose:
-        print("Input image file URL: \n{}".format(input_imageurl))
-    return input_imageurl
+        print("Input image file URL: \n{}".format(sw_imageurl))
+    return sw_imageurl
 
 def get_spaceweather_imagefile(inp_date, inp_fnind, output_data):
     """Returns a complete output file name string by concatenating 
