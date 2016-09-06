@@ -33,7 +33,7 @@
 import urllib.request
 
 ## II) Define functions
-def get_input_imageurl(inp_date, inp_fnind, inp_fname, input_data, verbose):
+def get_spaceweather_imageurl(inp_date, inp_fnind, inp_fname, input_data, verbose):
     """Returns a complete input url string by concatenating inp_date, 
     inp_name, and two string values in input_data dict.
     If verbose is truthy, then print the returned input url string
@@ -44,9 +44,10 @@ def get_input_imageurl(inp_date, inp_fnind, inp_fname, input_data, verbose):
         print("Input image file URL: \n{}".format(input_imageurl))
     return input_imageurl
 
-def get_output_imagefile(inp_date, inp_fnind, output_data):
+def get_spaceweather_imagefile(inp_date, inp_fnind, output_data):
     """Returns a complete output file name string by concatenating 
-    input variable string values
+    input variable string values based on the file format specified in the 
+    output_data dict.
     """
     output_imagefile = output_data['image']['path'] + \
             "_".join((inp_date, \
@@ -62,9 +63,9 @@ def save_spaceweather_images_to_file(input_data, output_data):
     date values, inp_date, and the other over the url files contained within 
     each folder:
         1) Get the image urls specified in the input_data dict using the 
-           website specific function get_input_imageurl() (e.g. spaceweather)
+           website specific function get_*_imageurl() (e.g. spaceweather)
         2) Get the image file name specified in the output_data dict using 
-           the user specified function get_output_imagefile()
+           the user specified function get_*_imagefile()
         3) Download each image from its url and save it to its image file name
            using urllib.request.urlretrieve
       Warning: the ['file']['name'] list in input_data MUST be the same length as 
@@ -73,9 +74,12 @@ def save_spaceweather_images_to_file(input_data, output_data):
     print("\n**** Saving image files from input URLs ****\n")
     for inp_date in input_data['url']['folder']['date']['values']:
         for inp_fnind, inp_fname in enumerate(input_data['url']['file']['name']):
-            input_imageurl = get_input_imageurl(inp_date, inp_fnind, inp_fname, \
-                    input_data, output_data['verbose'])
-            output_imagefile = get_output_imagefile(inp_date, inp_fnind, output_data)
+            input_imageurl = get_spaceweather_imageurl(inp_date, inp_fnind, \
+                    inp_fname, input_data, output_data['verbose']
+            )
+            output_imagefile = get_spaceweather_imagefile( \
+                    inp_date, inp_fnind, output_data
+            )
             urllib.request.urlretrieve(input_imageurl, output_imagefile)
     if output_data['verbose']:
         print("**** Finished saving images to file ****\n")
@@ -121,13 +125,4 @@ if __name__ == "__main__":
     # Warning: the ['file']['name'] list in input_data MUST be the same length as 
     # the ['file']['name'] list in output_data!!!
     save_spaceweather_images_to_file(input_data, output_data) 
-    #print("\n**** Saving image files from input URLs ****\n")
-    #for inp_date in input_data['url']['folder']['date']['values']:
-    #    for inp_fnind, inp_fname in enumerate(input_data['url']['file']['name']):
-    #        input_imageurl = get_input_imageurl(inp_date, inp_fnind, inp_fname, \
-    #                input_data, output_data['verbose'])
-    #        output_imagefile = get_output_imagefile(inp_date, inp_fnind, output_data)
-    #        urllib.request.urlretrieve(input_imageurl, output_imagefile)
-    #if output_data['verbose']:
-    #    print("**** Finished saving images to file ****\n")
 
